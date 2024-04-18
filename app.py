@@ -1,5 +1,5 @@
 
-import random,requests,re,os
+import random,requests,re,os,pytz
 from datetime import datetime
 from time import sleep
 from telebot import *
@@ -8,6 +8,15 @@ from pytube import YouTube , Search
 bot = telebot.TeleBot("6499740840:AAGrfrGBe1Prb82P1LlfWjRuB4LjFM2hxlI")
 
 ##############################################
+
+asker = []
+def gpt(message):
+	if message.from_user.id == asker[0] :
+		mess = message.text
+		rr = requests.get(f"https://chatgpt.apinepdev.workers.dev/?question={mess}").json()
+		nn = rr["answer"]
+		bot.reply_to(message ,nn)
+		asker = []
 
 members=[]
 def get_photos(user):
@@ -171,7 +180,8 @@ def st(message):
 			elif 0 < len(members) < 2 and message.from_user.id == members[0]:
 					bot.reply_to(message,"لتبدأ اللعبة تحتاج لاعبين اثنين عالاقل")
 		elif message.text == "الساعة"   :
-			now = datetime.now()
+			tz = pytz.timezone("Asia/Damascus")
+			now = datetime.now(tz)
 			bot.reply_to(message,now.strftime("\r %I:%M"))
 		elif message.text == "ثبتي" :
 			if check_admin_rights(message.chat.id,message.from_user.id) or message.from_user.id == 5989554287 :
@@ -322,6 +332,10 @@ def st(message):
 			bot.reply_to(message,random.choice(akrhk))
 		elif message.text == "احلف":
 			bot.reply_to(message,random.choice(a7lf))
+		elif message.text == "سؤال" :
+			bot.reply_to(message,"هات سؤالك و بيجاوبك ChatGPT !!!")
+			asker.append(message.from_user.id)
+			bot.register_next_step_handler(message,gpt)
 
 ##############################################
 
