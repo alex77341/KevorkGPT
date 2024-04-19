@@ -123,7 +123,7 @@ dow.add(dow1,dow2)
 @bot.message_handler(func=lambda message : True)
 
 def st(message):
-	global members,la3b
+	global members,la3b,asker
 	if message.chat.type == "private" :
 		if message.text in ("/start","/help") :
 			bot.send_message(message.chat.id,"هاي")
