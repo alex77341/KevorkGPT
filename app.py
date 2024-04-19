@@ -11,6 +11,7 @@ bot = telebot.TeleBot("6499740840:AAGrfrGBe1Prb82P1LlfWjRuB4LjFM2hxlI")
 
 asker = []
 def gpt(message):
+	global asker
 	if message.from_user.id == asker[0] :
 		mess = message.text
 		rr = requests.get(f"https://chatgpt.apinepdev.workers.dev/?question={mess}").json()
