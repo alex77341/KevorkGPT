@@ -5,7 +5,7 @@ from time import sleep
 from telebot import *
 from pytube import YouTube , Search
 
-bot = telebot.TeleBot("6499740840:AAGrfrGBe1Prb82P1LlfWjRuB4LjFM2hxlI")
+bot = telebot.TeleBot("6499740840:AAE5c4unK58flNAkv-taID4LEslClj2LKHk")
 
 ##############################################
 
@@ -14,9 +14,9 @@ def gpt(message):
 	global asker
 	if message.from_user.id == asker[0] :
 		mess = message.text
-		rr = requests.get(f"https://chatgpt.apinepdev.workers.dev/?question={mess}").json()
-		nn = rr["answer"]
-		bot.reply_to(message ,nn)
+		rr = requests.get(f"https://dev-the-dark-lord0.pantheonsite.io/wp-admin/js/Apis/Gemini.php?message={mess}").text
+		#nn = rr["answer"]
+		bot.reply_to(message ,rr)
 		asker = []
 
 members=[]
@@ -334,7 +334,7 @@ def st(message):
 		elif message.text == "احلف":
 			bot.reply_to(message,random.choice(a7lf))
 		elif message.text == "سؤال" :
-			bot.reply_to(message,"هات سؤالك و بيجاوبك ChatGPT !!!")
+			bot.reply_to(message,"هات سؤالك و بيجاوبك Gemini !!!")
 			asker.append(message.from_user.id)
 			bot.register_next_step_handler(message,gpt)
 
