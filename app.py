@@ -5,19 +5,20 @@ from time import sleep
 from telebot import *
 from pytube import YouTube , Search
 
-bot = telebot.TeleBot("6499740840:AAE5c4unK58flNAkv-taID4LEslClj2LKHk")
+bot = telebot.TeleBot("6499740840:AAEVeKpFH4PQa83DTS2juSrYX9KEDHgf_PY")
 
 ##############################################
 
 asker = []
 def gpt(message):
 	global asker
-	if message.from_user.id == asker[0] :
+	mc = message.chat.id + message.from_user.id
+	if mc in asker :
 		mess = message.text
-		rr = requests.get(f"https://dev-the-dark-lord0.pantheonsite.io/wp-admin/js/Apis/Gemini.php?message={mess}").text
-		#nn = rr["answer"]
-		bot.reply_to(message ,rr)
-		asker = []
+		rr = requests.get(f"https://chatgpt.apinepdev.workers.dev/?question={mess}").json()
+		nn = rr["answer"]
+		bot.reply_to(message ,nn)
+		asker.remove(mc)
 
 members=[]
 def get_photos(user):
@@ -132,19 +133,21 @@ def st(message):
 			bot.forward_message(5989554287,from_chat_id=message.chat.id,message_id=message.message_id)
 		elif message.from_user.id == 5989554287 :
 			rere = message.reply_to_message.forward_from
-			if message.content_type == "text" :
+			if rere and message.content_type == "text" :
 					try :
 						bot.send_message(rere.id,message.text)
 						bot.reply_to(message,"تم ارسال رسالتك الى العضو")
 					except :
 						bot.reply_to(message,"لم يتم ارسال الرسالة الى العضو")
-			else :
+			elif message.content_type != "text" :
 					bot.forward_message(chat_id=rere.id,from_chat_id=message.chat.id,message_id=message.message_id)
 					bot.reply_to(message,"تم ارسال رسالتك الى العضو")
+			
 	elif message.chat.type == "supergroup" :
 		if message.text == "حجرة"  :
 			bot.reply_to(message,f"""اختار حجرة {A} / ورقة {B} / مقص {C}""",reply_markup=E)
-			la3b.append(message.from_user.id)
+			mc = message.chat.id + message.from_user.id
+			la3b.append(mc)
 		elif message.text.startswith("ترجمي ") :
 			text = message.text.replace("ترجمي ","")
 			url = f"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=auto&tl=ar&q={text}"
@@ -229,7 +232,7 @@ def st(message):
 		elif message.text.startswith("قولي ") :
 			mt = message.text.replace("قولي ","")
 			bot.send_message(message.chat.id,mt)
-		elif message.text == "احذفي"  :
+		elif message.text == "مسح" :
 			if check_admin_rights(message.chat.id,message.from_user.id) or message.from_user.id == 5989554287 :
 				rer = message.reply_to_message
 				mt = message.message_id
@@ -237,17 +240,17 @@ def st(message):
 				bot.delete_message(chat_id=message.chat.id,message_id=mt)
 			else :
 				bot.reply_to(message,"الامر مخصص للادمن")
-		elif message.text.startswith("احذفي "):
-			mt = message.text.replace("احذفي ","")
-			mt = int(mt)
-			mt = -mt 
-			dele = -1
-			bbb = []
-			while dele != mt :
-				messs = message[dele].message_id
-				bbb.append(messs)
-				dele-=1
-			bot.delete_message(chat_id=message.chat.id,message_id=bbb)
+		#elif message.text.startswith("احذفي "):
+#			mt = message.text.replace("احذفي ","")
+#			mt = int(mt)
+#			mt = -mt 
+#			dele = -1
+#			bbb = []
+#			while dele != mt :
+#				messs = message[dele].message_id
+#				bbb.append(messs)
+#				dele-=1
+#			bot.delete_message(chat_id=message.chat.id,message_id=bbb)
 		elif message.text == "برا" and check_admin_rights(message.chat.id,message.from_user.id) or message.text == "برا" and message.from_user.id == 5989554287 :
 			rero = message.reply_to_message.from_user.id
 			rero1 = message.reply_to_message
@@ -334,8 +337,9 @@ def st(message):
 		elif message.text == "احلف":
 			bot.reply_to(message,random.choice(a7lf))
 		elif message.text == "سؤال" :
-			bot.reply_to(message,"هات سؤالك و بيجاوبك Gemini !!!")
-			asker.append(message.from_user.id)
+			bot.reply_to(message,"هات سؤالك و بيجاوبك ChatGPT !!!")
+			mc = message.chat.id + message.from_user.id
+			asker.append(mc)
 			bot.register_next_step_handler(message,gpt)
 
 ##############################################
@@ -344,7 +348,8 @@ def st(message):
 
 def wr(call):
 	global la3b,dow0
-	if call.data in ("a","b","c") and call.from_user.id == la3b[0]:
+	mc = call.message.chat.id + call.from_user.id
+	if call.data in ("a","b","c") and mc in la3b :
 		if call.data == "a":
 			ant = A
 		elif call.data == "b":
@@ -395,7 +400,7 @@ def wr(call):
 			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text="- مبروك ربحت و اخذت الخاتم و حصلت 3 نقاط")
 		elif bt != ran :
 			bot.edit_message_text(chat_id=call.message.chat.id,message_id=call.message.message_id,text="- خسرت و ضاع الخاتم ")
-		la3b = []
+		la3b.remove(mc)
 	elif call.data in ("video","audio") and user_is_search_youtube == call.from_user.id :
 		yt = YouTube(dow0)
 		bot.delete_message(chat_id=call.message.chat.id,message_id=call.message.message_id)
