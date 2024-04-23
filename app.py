@@ -10,10 +10,10 @@ bot = telebot.TeleBot("6499740840:AAG3eRq5-MPw8SIZ_Pbe4ZA6Oy79MKHdRMw")
 ##############################################
 
 asker = []
+La = len(asker)
 def gpt(message):
 	global asker
 	mc = message.chat.id + message.from_user.id
-	La = len(asker)
 	if mc in asker and La > 0 :
 		mess = message.text
 		rr = requests.get(f"https://chatgpt.apinepdev.workers.dev/?question={mess}").json()
@@ -341,7 +341,8 @@ def st(message):
 			bot.reply_to(message,"هات سؤالك و بيجاوبك ChatGPT !!!")
 			mc = message.chat.id + message.from_user.id
 			asker.append(mc)
-			bot.register_next_step_handler(message,gpt)
+			for _ in range(La) :
+				bot.register_next_step_handler(message,gpt)
 
 ##############################################
 
