@@ -5,7 +5,7 @@ from time import sleep
 from telebot import *
 from pytube import YouTube , Search
 
-bot = telebot.TeleBot("6499740840:AAEVeKpFH4PQa83DTS2juSrYX9KEDHgf_PY")
+bot = telebot.TeleBot("6499740840:AAG3eRq5-MPw8SIZ_Pbe4ZA6Oy79MKHdRMw")
 
 ##############################################
 
@@ -13,7 +13,8 @@ asker = []
 def gpt(message):
 	global asker
 	mc = message.chat.id + message.from_user.id
-	if mc in asker :
+	La = len(asker)
+	if mc in asker and La > 0 :
 		mess = message.text
 		rr = requests.get(f"https://chatgpt.apinepdev.workers.dev/?question={mess}").json()
 		nn = rr["answer"]
@@ -38,10 +39,10 @@ games = """قائمة الالعاب :
 • خاتم
 ~"""
 la3b = []
-rdod = ["عيونها","نعم","مشغولة اجيك بعدين","؟؟","ماذا","هنا","انفي","مريضة","بعدين","خلاص ازعجتنا","يكفي","قلبها","عيوني ياعيوني","مالي خلقك","امرني","خدودها","ها؟","خير؟"]
-a7bk = ["احلف ؟","اكثررر","كثر منها","اعشقك","اموت فيك","حبك برص","خجلتني","احس مو متطمنة","خلاص عرفنا","ماشي","لا تحبني مو لازم","الله يحبك","هممممم"]
-akrhk = ["جت من الله","مو اكثر مني","لا تكفى حبني","مو فارقة معي","اش بدك اسويلك؟","انقلع بس","الله معك","و كلشي بيننا ؟؟","و بعدين ؟","محد يهتم"]
-a7lf = ["والله","حرام نحلف على كل ما هب ودب","مايصير نحلف على اشياء تافهة","وش بتستفيد ؟","لا تصدق احسن"]
+rdod = ["بابا قال لي  لا تكلمي غرباء"]
+a7bk = ["انقلع"]
+akrhk = ["احسن"]
+a7lf = ["همم"]
 
 ##############################################
 
