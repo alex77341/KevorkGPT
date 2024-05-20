@@ -10,16 +10,16 @@ bot = telebot.TeleBot("6499740840:AAG3eRq5-MPw8SIZ_Pbe4ZA6Oy79MKHdRMw")
 ##############################################
 
 asker = []
-La = len(asker)
-def gpt(message):
-	global asker
-	mc = message.chat.id + message.from_user.id
-	if mc in asker and La > 0 :
-		mess = message.text
-		rr = requests.get(f"https://chatgpt.apinepdev.workers.dev/?question={mess}").json()
-		nn = rr["answer"]
-		bot.reply_to(message ,nn)
-		asker.remove(mc)
+
+#def gpt(message):
+#	global asker
+#	mc = message.chat.id + message.from_user.id
+#	if mc in asker and La > 0 :
+#		mess = message.text
+#		rr = requests.get(f"https://chatgpt.apinepdev.workers.dev/?question={mess}").json()
+#		nn = rr["answer"]
+#		bot.reply_to(message ,nn)
+#		asker.remove(mc)
 
 members=[]
 def get_photos(user):
@@ -39,10 +39,10 @@ games = """قائمة الالعاب :
 • خاتم
 ~"""
 la3b = []
-rdod = ["بابا قال لي  لا تكلمي غرباء"]
+rdod = ["مرحباً"]
 a7bk = ["انقلع"]
 akrhk = ["احسن"]
-a7lf = ["همم"]
+a7lf = ["سيء"]
 
 ##############################################
 
@@ -341,8 +341,14 @@ def st(message):
 			bot.reply_to(message,"هات سؤالك و بيجاوبك ChatGPT !!!")
 			mc = message.chat.id + message.from_user.id
 			asker.append(mc)
-			for _ in range(La) :
-				bot.register_next_step_handler(message,gpt)
+		elif len(asker) > 0 :
+			mc = message.chat.id + message.from_user.id
+			if mc in asker :
+				mt = message.text
+				rr = requests.get(f"https://chatgpt.apinepdev.workers.dev/?question={mt}").json()
+				answer = rr["answer"]
+				bot.reply_to(message,answer)
+				asker.remove(mc)
 
 ##############################################
 
