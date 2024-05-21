@@ -145,7 +145,7 @@ def st(message):
 			elif message.content_type != "text" :
 					bot.forward_message(chat_id=rere.id,from_chat_id=message.chat.id,message_id=message.message_id)
 					bot.reply_to(message,"تم ارسال رسالتك الى العضو")
-		elif message.text == "/ping" and message.from_user.id == 5989554287 :
+		elif message.text == "ping" and message.from_user.id == 5989554287 :
 			s = speedtest.Speedtest()
 			bot.reply_to(message,f"Upload speed : {s.upload()} m/s\nDownload speed : {s.download()} m/s")
 			
