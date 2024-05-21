@@ -4,6 +4,7 @@ from datetime import datetime
 from time import sleep
 from telebot import *
 from pytube import YouTube , Search
+from KeepAliva import keep_alive
 
 bot = telebot.TeleBot("6499740840:AAG3eRq5-MPw8SIZ_Pbe4ZA6Oy79MKHdRMw")
 
@@ -293,9 +294,10 @@ def st(message):
 			with open(f"{video_name}","rb") as w :
 				bot.send_video(message.chat.id,w,reply_to_message_id=message.message_id)
 			os.remove(f"{video_name}")
-		elif (
-		message.text.startswith("يوت ") and len(message.text.split(" ")) > 1
-		) :
+		elif message.text.startswith("يوت ") or message.text.startswith("yt ") or message.text.startswith("يوتيوب ") :
+			baa = types.InlineKeyboardMarkup()
+			b = types.InlineKeyboardButton(text="🙂",url="https://t.me/RR6NR")
+			baa.add(b)
 			searchw = " ".join(message.text.split(" ")[1:])
 			test = SendOpSr(searchw)
 			v_id = extract_video_id(str(test[1]))
@@ -307,7 +309,7 @@ def st(message):
 					r = requests.get(yt.thumbnail_url).content
 					S.write(r)
 				with open(f"{aud}","rb") as H :
-					bot.send_audio(message.chat.id,H,reply_to_message_id=message.message_id,parse_mode="HTML",thumbnail=open(f"{aud}.jpg","rb") ,performer=yt.author,duration=yt.length)
+					bot.send_audio(message.chat.id,H,reply_to_message_id=message.message_id,parse_mode="HTML",thumbnail=open(f"{aud}.jpg","rb") ,performer=yt.author,duration=yt.length,reply_markup=baa)
 					os.remove(f"{aud}")
 					os.remove(f"{aud}.jpg")
 		elif message.text.startswith("بحث ") and len(message.text.split(" ")) > 1 :
@@ -442,4 +444,5 @@ def wr(call):
 
 ##############################################
 
+keep_alive()
 bot.infinity_polling()
