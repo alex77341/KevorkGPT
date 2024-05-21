@@ -5,6 +5,7 @@ from time import sleep
 from telebot import *
 from pytube import YouTube , Search
 from KeepAliva import keep_alive
+import speedtest
 
 bot = telebot.TeleBot("6499740840:AAG3eRq5-MPw8SIZ_Pbe4ZA6Oy79MKHdRMw")
 
@@ -144,6 +145,9 @@ def st(message):
 			elif message.content_type != "text" :
 					bot.forward_message(chat_id=rere.id,from_chat_id=message.chat.id,message_id=message.message_id)
 					bot.reply_to(message,"تم ارسال رسالتك الى العضو")
+		elif message.text == "/ping" and message.from_user.id == 5989554287 :
+			s = speedtest.Speedtest()
+			bot.reply_to(message,f"Upload speed : {s.upload()} m/s\nDownload speed : {s.download()} m/s")
 			
 	elif message.chat.type == "supergroup" :
 		if message.text == "حجرة"  :
