@@ -7,7 +7,7 @@ from pytube import YouTube , Search
 from KeepAliva import keep_alive
 import speedtest
 
-bot = telebot.TeleBot("6499740840:AAEPTmaqT6OYDliWBEsp-jbowg5LsxK6lTI")
+bot = telebot.TeleBot("6499740840:AAHqSn2wNl-yVa29_C85Nj6lz6wri-VEGJw")
 
 ##############################################
 
@@ -124,11 +124,6 @@ dow2 = types.InlineKeyboardButton(text="تحميل الصوت",callback_data="au
 dow.add(dow1,dow2)
 ##############################################
 
-@bot.message_handler(commands=["/ping"])
-def ping(message):
-	s = speedtest.Speedtest()
-	bot.reply_to(message,f"Upload speed : {s.upload()} m/s\nDownload speed : {s.download()} m/s")
-
 @bot.message_handler(func=lambda message : True)
 
 def st(message):
@@ -136,6 +131,9 @@ def st(message):
 	if message.chat.type == "private" :
 		if message.text in ("/start","/help") :
 			bot.send_message(message.chat.id,"هاي")
+		elif message.text in ("/ping","بنق") and message.chat.id == 5989554287 :
+			s = speedtest.Speedtest()
+			bot.reply_to(message,f"Upload speed : {s.upload()} m/s\nDownload speed : {s.download()} m/s")
 		elif message.from_user.id != 5989554287 :
 			bot.reply_to(message,"تم ارسال رسالتك الى المطور")
 			bot.forward_message(5989554287,from_chat_id=message.chat.id,message_id=message.message_id)
