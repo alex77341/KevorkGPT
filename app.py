@@ -1,12 +1,11 @@
 
-import random,requests,re,os,pytz
+import random,requests,re,os,pytz,speedtest,fileinput
 from datetime import datetime
 from time import sleep
 from telebot import *
 from pytube import YouTube , Search
+from gtts import gTTS
 from KeepAliva import keep_alive
-import speedtest
-
 bot = telebot.TeleBot("6499740840:AAHqSn2wNl-yVa29_C85Nj6lz6wri-VEGJw")
 
 ##############################################
@@ -77,6 +76,47 @@ keyboardGame.add(
     F('👊🏽', callback_data='bt3'),
     F('👊🏾', callback_data='bt4')
 )
+
+##############################################
+
+#def makefloos(id):
+#	try :
+#		with open("floos.txt","a") as h :
+#			if (f"{id}") in h :
+#				bb = "موجود"
+#				return bb
+#			else :
+#				h.write(f"{id}:0\n")
+#				return True
+#	except :
+#		return False
+
+#def getfloos(id):
+#	with open("floos.txt","r") as s :
+#		try :
+#			flooss = s.readlines().split(str(id)+":")[1]
+#			return flooss
+#		except :
+#			return False
+
+#def addfloos(id,flos,fls):
+#	try :
+#		rt = {f'{id}:{flos}' : f'{id}:{fls}'}
+#		for line in fileinput.FileInput("floos.txt",inplace=True) :
+#			for st in rt :
+#				rtt = rt[st]
+#				line = line.replace(st,rtt)
+#				return True
+#	except :
+#		return False
+	
+
+
+def detect_language_code(text):
+    if any(char in 'اأبتثجحخدذرزسشصضطظعغفقكلمنهوي' for char in text):
+        return "ar"
+    else:
+        return "en"
 
 ##############################################
 
@@ -355,6 +395,32 @@ def st(message):
 				answer = rr["answer"]
 				bot.reply_to(message,answer)
 				asker.remove(mc)
+		elif message.text.startswith("انطقي ") or message.text.startswith("say ") :
+			mt = message.text
+			if mt.startswith("انطقي "):
+				text = mt.replace("انطقي ","")
+				lang = detect_language_code(text)
+				tts = gTTS(text,lang=lang)
+				audio_file = f"voice{text}.mp3"
+				tts.save(audio_file)
+				with open(audio_file,"rb") as voice :
+					bot.send_voice(message.chat.id,voice,reply_to_message_id=message.message_id,caption=text)
+				os.remove(audio_file)
+			elif mt.startswith("say ") :
+				text = mt.replace("say ","")
+				lang = detect_language_code(text)
+				tts = gTTS(text,lang=lang)
+				audio_file = f"voice{text}.mp3"
+				tts.save(audio_file)
+				with open(audio_file,"rb") as voice :
+					bot.send_voice(message.chat.id,voice,reply_to_message_id=message.message_id,caption=text)
+				os.remove(audio_file)
+		elif message.text.startswith("انستا ") :
+			mt = message.text
+			url = mt.replace("انستا ","")
+			IG = requests.get(f'https://insta-twfw.onrender.com/?url={url}').json()['data'][0]['xdt_shortcode_media']['video_url']
+			bot.send_video(message.chat.id,video=IG,reply_to_message_id=message.message_id)
+		
 
 ##############################################
 
