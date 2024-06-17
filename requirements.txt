@@ -16,3 +16,4 @@ pytube
 requests
 pytz
 speedtest-cli
+gtts
