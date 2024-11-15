@@ -1,5 +1,6 @@
 
 import requests,json,telebot
+from KeepAliva import keep_alive
 
 bot = telebot.TeleBot("7868482326:AAG_J6xCPNWGaoLX5L5DFpjilKltFm8XPuU")
 
@@ -81,4 +82,5 @@ def ask(message):
 	elif len(asker) > 0 and message.chat.type == "supergroup" and (message.chat.id+message.from_user.id) in asker :
 		bot.reply_to(message,answer(message.text))
 		asker.remove(message.chat.id+message.from_user.id)
+keep_alive()
 bot.infinity_polling()
