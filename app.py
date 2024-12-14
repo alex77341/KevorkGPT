@@ -5,7 +5,6 @@ from KeepAliva import keep_alive
 proxy = "UbGMph:w4mknx@194.67.222.230:9242"
 
 proxies = {
-    "http": f"http://{proxy}",
     "https": f"https://{proxy}",
 }
 
