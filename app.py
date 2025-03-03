@@ -3,7 +3,7 @@ import requests, base64, json, telebot
 from bs4 import BeautifulSoup
 from KeepAliva import keep_alive
 
-bot = telebot.TeleBot("7564960170:AAEM9321ViN7FQrW1sQIwBXHkCLXErYDrLg")
+bot = telebot.TeleBot("8150547288:AAEvCuKX_PneGVOzEMBpWX3BKAcGJLNP2Nw")
 
 CLIENT_ID = '0a91bd93f2af480cbcaa90134f39bef3'
 CLIENT_SECRET = '5d2823db8f8d439c999601fe12fbbfbe'
