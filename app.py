@@ -80,7 +80,7 @@ def start(message):
 @bot.message_handler(func=lambda message: True)
 def work(message):
     song = search_track(message.text)
-    bot.send_message(message.chat.id,song)
+    #bot.send_message(message.chat.id,song)
     title, performer, duration = get_name(song)
     url = download_song(song)
     #bot.send_audio(message.chat.id, url, title=title, performer=performer, duration=duration)
