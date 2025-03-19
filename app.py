@@ -3,7 +3,7 @@ import requests, base64, json, telebot
 from bs4 import BeautifulSoup
 from KeepAliva import keep_alive
 
-bot = telebot.TeleBot("8150547288:AAEvCuKX_PneGVOzEMBpWX3BKAcGJLNP2Nw")
+bot = telebot.TeleBot("7564960170:AAEM9321ViN7FQrW1sQIwBXHkCLXErYDrLg")
 
 CLIENT_ID = '0a91bd93f2af480cbcaa90134f39bef3'
 CLIENT_SECRET = '5d2823db8f8d439c999601fe12fbbfbe'
@@ -68,7 +68,10 @@ def search_track(query):
 
 def download_song(link):
     url = "https://spotisongdownloader.to/api/composer/spotify/wertyuht9847635.php"
-    headers = {"Accept":"application/json, text/javascript, */*; q=0.01","Accept-Language":"en-GB,en;q=0.9,es-MX;q=0.8,es;q=0.7,ru-BY;q=0.6,ru;q=0.5,en-US;q=0.4,ar-AE;q=0.3,ar;q=0.2","Content-Length":"136","Content-Type":"application/x-www-form-urlencoded; charset=UTF-8","Cookie":"_ga=GA1.1.1137895648.1737412882; PHPSESSID=f9linp9iudoktn9mssi3km301b; _ga_X67PVRK9F0=GS1.1.1741024949.2.1.1741024967.0.0.0; quality=m4a","Origin":"https://spotisongdownloader.to","Referer":"https://spotisongdownloader.to/track.php","Sec-Ch-Ua":'"Not A(Brand";v="8", "Chromium";v="132"',"Sec-Ch-Ua-Mobile":"?1","Sec-Ch-Ua-Platform":'"Android"',"Sec-Fetch-Dest":"empty","Sec-Fetch-Mode":"cors","Sec-Fetch-Site":"same-origin","User-Agent":"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36","X-Requested-With":"XMLHttpRequest"}
+    s = requests.Session()
+    ss = s.get(url)
+    PHPSESSID = s.cookies.get("PHPSESSID")
+    headers = {"Accept":"application/json, text/javascript, */*; q=0.01","Accept-Language":"en-GB,en;q=0.9,es-MX;q=0.8,es;q=0.7,ru-BY;q=0.6,ru;q=0.5,en-US;q=0.4,ar-AE;q=0.3,ar;q=0.2","Content-Length":"136","Content-Type":"application/x-www-form-urlencoded; charset=UTF-8","Cookie":f"_ga=GA1.1.1137895648.1737412882; PHPSESSID={PHPSESSID}; _ga_X67PVRK9F0=GS1.1.1741024949.2.1.1741024967.0.0.0; quality=m4a","Origin":"https://spotisongdownloader.to","Referer":"https://spotisongdownloader.to/track.php","Sec-Ch-Ua":'"Not A(Brand";v="8", "Chromium";v="132"',"Sec-Ch-Ua-Mobile":"?1","Sec-Ch-Ua-Platform":'"Android"',"Sec-Fetch-Dest":"empty","Sec-Fetch-Mode":"cors","Sec-Fetch-Site":"same-origin","User-Agent":"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36","X-Requested-With":"XMLHttpRequest"}
     data = {"url": link}
     r = requests.post(url,headers=headers,data=data).json()
     return r["dlink"]
@@ -80,7 +83,7 @@ def start(message):
 @bot.message_handler(func=lambda message: True)
 def work(message):
     song = search_track(message.text)
-    #bot.send_message(message.chat.id,song)
+    bot.send_message(message.chat.id,song)
     title, performer, duration = get_name(song)
     url = download_song(song)
     #bot.send_audio(message.chat.id, url, title=title, performer=performer, duration=duration)
