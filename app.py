@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 import re
 from KeepAliva import keep_alive
 
-bot = telebot.TeleBot("7929822230:AAFItSMmR-QKP6bm6i9Fikt1sDfD8xvaLH8")
+bot = telebot.TeleBot("7409595622:AAEEr1NjAwBSUKcGpj60AaF49vpKtr-4Uzg")
 
 
 class Clened:
@@ -164,8 +164,16 @@ def start(message):
 
 @bot.message_handler(content_types=["audio","voice"])
 def c(message):
-	Clened().Voice(bot.get_file(message.voice.file_id.file_path))
+	if message.voice :
+		file_info = bot.get_file(message.voice.file_id)
+	elif message.audio :
+		file_info = bot.get_file(message.audio.file_id)
+	downloaded_file = bot.download_file(file_info.file_path)
 	bot.reply_to(message,"working...")
+	with open("potato.mp3","wb") as bruh :
+		bruh.write(downloaded_file)
+	with open("potato.mp3","rb") as file :
+		Clened().Voice(file)
 	bot.send_audio(chat_id=message.chat.id,audio="Clened.wav")
 
 keep_alive()
