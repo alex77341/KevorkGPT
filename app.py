@@ -1,106 +1,172 @@
+
+import requests , telebot
+import hashlib
+import hmac
 import os
-import requests, base64, json, telebot
-from bs4 import BeautifulSoup
+import time
+from datetime import datetime, timezone
+import re
 from KeepAliva import keep_alive
 
-bot = telebot.TeleBot("8150547288:AAEvCuKX_PneGVOzEMBpWX3BKAcGJLNP2Nw")
+bot = telebot.TeleBot("7929822230:AAFItSMmR-QKP6bm6i9Fikt1sDfD8xvaLH8")
 
-CLIENT_ID = '0a91bd93f2af480cbcaa90134f39bef3'
-CLIENT_SECRET = '5d2823db8f8d439c999601fe12fbbfbe'
-REDIRECT_URI = 'https://t.me/KEV0RK'
 
-def get_access_token():
-    auth_url = 'https://accounts.spotify.com/api/token'
-    auth_header = {
-        'Authorization': 'Basic ' + base64.b64encode(f'{CLIENT_ID}:{CLIENT_SECRET}'.encode('utf-8')).decode('utf-8')
-    }
-    auth_data = {
-        'grant_type': 'client_credentials'
-    }
-    response = requests.post(auth_url, headers=auth_header, data=auth_data)
-    response_data = response.json()
-    return response_data['access_token']
+class Clened:
+    def __init__(self):
+        self.headers_base = {
+            'User-Agent': "LALALAI/2.8.2.146 (android-armv8)",
+            'Accept-Encoding': "gzip",
+            'authorization': "license"
+        }
+        self.file_id = None
 
-def get_track_details(spotify_url, token):
-    track_id = spotify_url.split("/")[-1].split("?")[0]
-    url = f"https://api.spotify.com/v1/tracks/{track_id}"
-    headers = {"Authorization": f"Bearer {token}"}  
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    track_data = response.json()
-    track_name = track_data["name"]
-    artist_name = ", ".join(artist["name"] for artist in track_data["artists"])
-    duration_ms = track_data["duration_ms"]
-    duration_sec = duration_ms // 1000
-    
-    return track_name, artist_name, duration_sec
+    def sign(self, key, msg):
+        return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
 
-def get_name(spot):
-    spotify_url = spot
-    token = get_access_token()
-    try:
-        track_name, artist_name, duration_sec = get_track_details(spotify_url, token)
-        return track_name, artist_name, duration_sec
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    def Signature(self, key, date_stamp, region, service):
+        k_date = self.sign(('AWS4' + key).encode('utf-8'), date_stamp)
+        k_region = self.sign(k_date, region)
+        k_service = self.sign(k_region, service)
+        k_signing = self.sign(k_service, 'aws4_request')
+        return k_signing
 
-def search_track(query):
-    access_token = get_access_token()
-    search_url = 'https://api.spotify.com/v1/search'
-    params = {
-        'q': query,
-        'type': 'track',
-        'limit': 1
-    }
-    headers = {
-        'Authorization': f'Bearer {access_token}'
-    }
-    response = requests.get(search_url, headers=headers, params=params)
-    if response.status_code == 200:
-        data = response.json()
-        if data['tracks']['items']:
-            first_song = data['tracks']['items'][0]
-            return first_song['external_urls']['spotify']
-        else:
-            return "No songs found."
-    else:
-        return f"Error {response.status_code}: {response.text}"
+    def Upload(self):
+        url = "https://www.lalal.ai/api/upload/credentials/"
+        res = requests.post(url, headers=self.headers_base).json()
+        self.file_id = res['result']['file_id']
+        return res['result']
 
-def download_song(link):
-    url = "https://spotisongdownloader.to/api/composer/spotify/wertyuht9847635.php"
-    s = requests.Session()
-    ss = s.get(url)
-    PHPSESSID = s.cookies.get("PHPSESSID")
-    headers = {"Accept":"application/json, text/javascript, */*; q=0.01","Accept-Language":"en-GB,en;q=0.9,es-MX;q=0.8,es;q=0.7,ru-BY;q=0.6,ru;q=0.5,en-US;q=0.4,ar-AE;q=0.3,ar;q=0.2","Content-Length":"136","Content-Type":"application/x-www-form-urlencoded; charset=UTF-8","Cookie":f"_ga=GA1.1.1137895648.1737412882; PHPSESSID={PHPSESSID}; _ga_X67PVRK9F0=GS1.1.1741024949.2.1.1741024967.0.0.0; quality=m4a","Origin":"https://spotisongdownloader.to","Referer":"https://spotisongdownloader.to/track.php","Sec-Ch-Ua":'"Not A(Brand";v="8", "Chromium";v="132"',"Sec-Ch-Ua-Mobile":"?1","Sec-Ch-Ua-Platform":'"Android"',"Sec-Fetch-Dest":"empty","Sec-Fetch-Mode":"cors","Sec-Fetch-Site":"same-origin","User-Agent":"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36","X-Requested-With":"XMLHttpRequest"}
-    data = {"url": link}
-    r = s.post(url,headers=headers,data=data).json()
-    return r["dlink"]
+    def upload_audio(self, file_path, creds):
+        method = 'PUT'
+        service = 's3'
+        host = f"lalalai.s3.{creds['region']}.amazonaws.com"
+        endpoint = f"https://{host}/media/source/{self.file_id}"
+        content_type = "audio/x-wav"
+        region = creds['region']
+
+        now = datetime.now(timezone.utc)
+        amz_date = now.strftime('%Y%m%dT%H%M%SZ')
+        date_stamp = now.strftime('%Y%m%d')
+
+        with open(file_path, 'rb') as f:
+            payload = f.read()
+
+        Wav = hashlib.sha256(payload).hexdigest()
+        MrBeast = f"/media/source/{self.file_id}"
+        Quick = "x-id=PutObject"
+
+        Coin = (
+            f"content-disposition:attachment; filename*=UTF-8''audio.wav\n"
+            f"content-type:{content_type}\n"
+            f"host:{host}\n"
+            f"x-amz-content-sha256:{Wav}\n"
+            f"x-amz-date:{amz_date}\n"
+            f"x-amz-security-token:{creds['credentials']['SessionToken']}\n"
+        )
+
+        signed_headers = "content-disposition;content-type;host;x-amz-content-sha256;x-amz-date;x-amz-security-token"
+
+        Cool = (
+            f"{method}\n{MrBeast}\n{Quick}\n"
+            f"{Coin}\n{signed_headers}\n{Wav}"
+        )
+
+        algorithm = 'AWS4-HMAC-SHA256'
+        Tom = f"{date_stamp}/{region}/{service}/aws4_request"
+        Sorry = (
+            f"{algorithm}\n{amz_date}\n{Tom}\n"
+            f"{hashlib.sha256(Cool.encode('utf-8')).hexdigest()}"
+        )
+
+        signing_key = self.Signature(
+            creds['credentials']['SecretAccessKey'], date_stamp, region, service
+        )
+        signature = hmac.new(signing_key, Sorry.encode('utf-8'), hashlib.sha256).hexdigest()
+
+        Auth = (
+            f"{algorithm} Credential={creds['credentials']['AccessKeyId']}/{Tom}, "
+            f"SignedHeaders={signed_headers}, Signature={signature}"
+        )
+
+        headers = {
+            "User-Agent": "aws-sdk-dart/0.3.1 aws-sigv4-dart/0.6.4",
+            "Connection": "close",
+            "Accept-Encoding": "gzip",
+            "Content-Type": content_type,
+            "x-amz-date": amz_date,
+            "amz-sdk-invocation-id": os.urandom(16).hex(),
+            "amz-sdk-request": "attempt=1; max=3",
+            "authorization": Auth,
+            "x-amz-content-sha256": Wav,
+            "content-disposition": "attachment; filename*=UTF-8''audio.wav",
+            "x-amz-security-token": creds['credentials']['SessionToken']
+        }
+
+        params = {"x-id": "PutObject"}
+        res = requests.put(endpoint, headers=headers, params=params, data=payload)
+        if res.status_code != 200:
+            raise Exception("Upload failed", res.text)
+
+    def Cc(self):
+        url = "https://www.lalal.ai/api/check/"
+        payload = {'id': self.file_id, 'response_format': "multistem"}
+        res = requests.post(url, data=payload, headers=self.headers_base)
+        return res.json()
+
+    def Pro(self):
+        url = "https://www.lalal.ai/api/preview/"
+        payload = {
+            'id': self.file_id,
+            'stem': "voice",
+            'with_segments': "true",
+            'noise_cancelling_level': "1",
+            'splitter': "perseus"
+        }
+        res = requests.post(url, data=payload, headers=self.headers_base)
+        return res.json()
+
+    def Download(self, url):
+        headers = {
+            'User-Agent': "just_audio/2.8.2 (Linux;Android 11) ExoPlayerLib/2.18.7",
+            'Connection': "Keep-Alive",
+            'Accept-Encoding': "identity"
+        }
+        r = requests.get(url, headers=headers)
+        with open("Clened.wav", "wb") as f:
+            f.write(r.content)
+        print("[*] Done Download Clened.wav File .!")
+    def Voice(self, file_path):
+        creds = self.Upload()
+        print("[*] Waiting for Update Credentials...")
+        self.upload_audio(file_path, creds)
+        print("[*] Waiting for UploadAudio...")
+        self.Cc()
+        print("[*] Waiting for Check...")
+        self.Pro()
+        print("[*] Waiting for processing...")
+        while True:
+            result = self.Cc()
+            print("[*] Waiting for Cleaning...")
+            if 'playlist_file' in str(result):
+                print("[+] File is ready!")              
+                url = re.search(r"'label': 'voice', 'url': '([^']+)'", str(result)).group(1)
+                self.Download(url)
+                break
+            else:
+                time.sleep(3)
+
+#Voice = input("[#] Enter The Audio File path Or Name (To Clean It From Noise Voice) : ")
+#Clened().Voice(Voice)
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    bot.reply_to(message, "ارسل اسم الاغنية")
+	bot.reply_to(message,"hey")
 
-@bot.message_handler(func=lambda message: True)
-def work(message):
-    song = search_track(message.text)
-    #bot.send_message(message.chat.id,song)
-    title, performer, duration = get_name(song)
-    url = download_song(song)
-    #bot.send_audio(message.chat.id, url, title=title, performer=performer, duration=duration)
-    output_file = title+".mp3"
-    print(output_file)
-    try:
-        #response = requests.get(url, stream=True)
-#        response.raise_for_status()
-        with open(output_file, "wb") as file:
-            file.write(requests.get(url).content)
-            #for chunk in response.iter_content(chunk_size=8192):
-#                file.write(chunk)
-        with open(output_file, "rb") as F:
-            bot.send_audio(message.chat.id, F, title=title, performer=performer, duration=duration)
-        os.remove(output_file)
-    except requests.exceptions.RequestException as e:
-        bot.reply_to(message, f"An error occurred: {e}")
+@bot.message_handler(content_types=["audio","voice"])
+def c(message):
+	Clened().Voice(bot.get_file(message.document.file_id))
+	bot.reply_to(message,"working...")
+	bot.send_audio(chat_id=message.chat.id,audio="Clened.wav")
 
 keep_alive()
 bot.infinity_polling()
