@@ -4,8 +4,4 @@ certifi==2023.11.17
 pyTelegramBotAPI==4.14.1
 requests==2.31.0
 bs4
-hashlib
-hmac
-time
-datetime
 re
