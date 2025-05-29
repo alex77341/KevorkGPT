@@ -164,7 +164,7 @@ def start(message):
 
 @bot.message_handler(content_types=["audio","voice"])
 def c(message):
-	Clened().Voice(bot.get_file(message.voice.file_id))
+	Clened().Voice(bot.get_file(message.voice.file_id.file_path))
 	bot.reply_to(message,"working...")
 	bot.send_audio(chat_id=message.chat.id,audio="Clened.wav")
 
