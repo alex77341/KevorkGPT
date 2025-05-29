@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 import re
 from KeepAliva import keep_alive
 
-bot = telebot.TeleBot("7929822230:AAFItSMmR-QKP6bm6i9Fikt1sDfD8xvaLH8")
+bot = telebot.TeleBot("7409595622:AAEEr1NjAwBSUKcGpj60AaF49vpKtr-4Uzg")
 
 
 class Clened:
